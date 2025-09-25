@@ -3,8 +3,6 @@ package br.com.cod3r.mw.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.cod3r.mw.exception.ExplosionException;
-
 public class Square {
 
 	private final int row;
@@ -15,10 +13,19 @@ public class Square {
 	private boolean flagged = false;
 
 	private List<Square> adjacentSquares = new ArrayList<>();
+	private List<SquareObserver> observers = new ArrayList<>();
 
 	Square(int row, int column) {
 		this.row = row;
 		this.column = column;
+	}
+
+	public void addObserver(SquareObserver observer) {
+		observers.add(observer);
+	}
+
+	private void notifyObservers(SquareEvent event) {
+		observers.stream().forEach(o -> o.onSquareEvent(this, event));
 	}
 
 	boolean addAdjacentSquare(Square adjacent) {
@@ -45,16 +52,24 @@ public class Square {
 	void changeMarking() {
 		if (!open) {
 			flagged = !flagged;
+
+			if (flagged) {
+				notifyObservers(SquareEvent.MARK);
+			} else {
+				notifyObservers(SquareEvent.UNMARK);
+			}
 		}
 	}
 
 	boolean openSquare() {
 
 		if (!open && !flagged) {
-			open = true;
 			if (mine) {
-				throw new ExplosionException();
+				notifyObservers(SquareEvent.EXPLODE);
+				return true;
 			}
+			setOpen(true);
+
 			if (safeNeighborhood()) {
 				adjacentSquares.forEach(a -> a.openSquare());
 			}
@@ -105,6 +120,9 @@ public class Square {
 
 	public void setOpen(boolean open) {
 		this.open = open;
+		if (open) {
+			notifyObservers(SquareEvent.OPEN);
+		}
 	}
 
 	public int getRow() {
@@ -113,20 +131,6 @@ public class Square {
 
 	public int getColumn() {
 		return column;
-	}
-
-	public String toString() {
-		if (flagged) {
-			return "x";
-		} else if (open && mine) {
-			return "*";
-		} else if (open && minesInNeighborhood() > 0) {
-			return Long.toString(minesInNeighborhood());
-		} else if (open) {
-			return " ";
-		} else {
-			return "?";
-		}
 	}
 
 }
