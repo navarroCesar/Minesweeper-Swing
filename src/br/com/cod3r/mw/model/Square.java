@@ -49,7 +49,7 @@ public class Square {
 
 	}
 
-	void changeMarking() {
+	public void changeMarking() {
 		if (!open) {
 			flagged = !flagged;
 
@@ -61,7 +61,7 @@ public class Square {
 		}
 	}
 
-	boolean openSquare() {
+	public boolean openSquare() {
 
 		if (!open && !flagged) {
 			if (mine) {
@@ -80,7 +80,7 @@ public class Square {
 		return false;
 	}
 
-	boolean safeNeighborhood() {
+	public boolean safeNeighborhood() {
 		return adjacentSquares.stream().noneMatch(a -> a.mine);
 	}
 
@@ -96,8 +96,8 @@ public class Square {
 		return unraveled || protectedd;
 	}
 
-	long minesInNeighborhood() {
-		return adjacentSquares.stream().filter(a -> a.mine).count();
+	public int minesInNeighborhood() {
+		return (int) adjacentSquares.stream().filter(a -> a.mine).count();
 	}
 
 	void restart() {

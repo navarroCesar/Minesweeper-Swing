@@ -96,7 +96,7 @@ public class Board implements SquareObserver {
 	}
 
 	private void revealMines() {
-		squares.stream().filter(s -> s.isAMine()).forEach(s -> s.setOpen(true));
+		squares.stream().filter(s -> s.isAMine()).filter(s -> !s.isFlagged()).forEach(s -> s.setOpen(true));
 	}
 
 	public int getRows() {
