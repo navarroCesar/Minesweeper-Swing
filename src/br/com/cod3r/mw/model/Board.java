@@ -7,9 +7,9 @@ import java.util.function.Predicate;
 
 public class Board implements SquareObserver {
 
-	private int rows;
-	private int columns;
-	private int mines;
+	private final int rows;
+	private final int columns;
+	private final int mines;
 
 	private final List<Square> squares = new ArrayList<>();
 	private final List<Consumer<EventResult>> observers = new ArrayList<>();
@@ -22,6 +22,10 @@ public class Board implements SquareObserver {
 		generateSquares();
 		linkNeighborhood();
 		randomizeMines();
+	}
+
+	public void forEachSquare(Consumer<Square> action) {
+		squares.forEach(action);
 	}
 
 	public void addObserver(Consumer<EventResult> observer) {
@@ -94,4 +98,13 @@ public class Board implements SquareObserver {
 	private void revealMines() {
 		squares.stream().filter(s -> s.isAMine()).forEach(s -> s.setOpen(true));
 	}
+
+	public int getRows() {
+		return rows;
+	}
+
+	public int getColumns() {
+		return columns;
+	}
+
 }
