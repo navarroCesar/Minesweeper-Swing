@@ -104,6 +104,7 @@ public class Square {
 		open = false;
 		mine = false;
 		flagged = false;
+		notifyObservers(SquareEvent.RESTART);
 	}
 
 	public boolean isAMine() {

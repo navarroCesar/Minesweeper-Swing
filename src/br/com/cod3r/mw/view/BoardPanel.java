@@ -2,7 +2,9 @@ package br.com.cod3r.mw.view;
 
 import java.awt.GridLayout;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import br.com.cod3r.mw.model.Board;
 
@@ -15,9 +17,15 @@ public class BoardPanel extends JPanel {
 		board.forEachSquare(s -> add(new SquareButton(s)));
 
 		board.addObserver(e -> {
-			// TODO show result to user
+			SwingUtilities.invokeLater(() -> {
+				if (e.isVictory()) {
+					JOptionPane.showMessageDialog(this, "Congratulations! You cleared the board.");
+				} else {
+					JOptionPane.showMessageDialog(this, "Game Over.");
+				}
+				board.restartGame();
+			});
 
-			board.restartGame();
 		});
 	}
 
